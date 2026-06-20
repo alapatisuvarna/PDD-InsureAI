@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import TopNav from './TopNav'
-import { useUIStore } from '@/store/uiStore'
+import AIAssistantWidget from '@/features/ai-assistant/AIAssistantWidget'
 import { cn } from '@/lib/utils'
-/*import AIAssistantWidget from '@/features/ai-assistant/AIAssistantWidget'*/
+import { useUIStore } from '@/store/uiStore'
 
 export default function AppShell() {
   const { sidebarCollapsed } = useUIStore()

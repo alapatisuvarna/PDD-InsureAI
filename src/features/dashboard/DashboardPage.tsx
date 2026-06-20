@@ -225,7 +225,7 @@ export default function DashboardPage() {
               <YAxis tick={{ fontSize: 11, fill: 'currentColor', opacity: 0.5 }} axisLine={false} tickLine={false} tickFormatter={v => `₹${(v/1000).toFixed(0)}k`} />
               <Tooltip
                 contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, fontSize: 12 }}
-                formatter={(v: number) => [`₹${v.toLocaleString('en-IN')}`, 'Premium']}
+                formatter={(v: any) => [`₹${v.toLocaleString('en-IN')}`, 'Premium']}
               />
               <Area type="monotone" dataKey="premium" stroke="#3b82f6" strokeWidth={2.5} fill="url(#premGrad)" dot={{ fill: '#3b82f6', strokeWidth: 0, r: 4 }} />
             </AreaChart>
@@ -245,7 +245,7 @@ export default function DashboardPage() {
               </Pie>
               <Tooltip
                 contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
-                formatter={(v: number) => [`${v}%`, '']}
+                formatter={(v: any) => [`${v}%`, '']}
               />
             </PieChart>
           </ResponsiveContainer>

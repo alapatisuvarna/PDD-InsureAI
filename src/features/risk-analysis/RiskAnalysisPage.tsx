@@ -237,7 +237,7 @@ export default function RiskAnalysisPage() {
                     <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} width={70} />
                     <CartesianGrid horizontal={false} strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.05} />
-                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} formatter={(v: number) => [`${v}/100`, 'Score']} />
+                    <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} formatter={(v: any) => [`${v}/100`, 'Score']} />
                     <Bar dataKey="score" radius={[0, 6, 6, 0]}>
                       {categoryData.map((entry, index) => (
                         <rect key={index} fill={entry.fill} />

@@ -11,16 +11,4 @@ export default defineConfig({
     server: {
         port: 5173,
     },
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ['react', 'react-dom', 'react-router-dom'],
-                    supabase: ['@supabase/supabase-js'],
-                    charts: ['recharts'],
-                    ui: ['framer-motion', 'lucide-react'],
-                },
-            },
-        },
-    },
 });

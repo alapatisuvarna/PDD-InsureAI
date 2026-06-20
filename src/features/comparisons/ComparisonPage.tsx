@@ -165,7 +165,7 @@ export default function ComparisonPage() {
                     <td className="p-4 text-sm text-muted-foreground font-medium">{row.label}</td>
                     {selectedPolicies.map((p, i) => (
                       <td key={i} className="p-4 text-center text-sm font-semibold text-foreground">
-                        {row.format((p as Record<string, number>)[row.key])}
+                        {row.format((p as any)[row.key])}
                       </td>
                     ))}
                   </tr>

@@ -91,7 +91,7 @@ export default function AdminClaims() {
               {filtered.map(claim => (
                 <tr key={claim.id} className="border-b border-border/50 hover:bg-muted/30">
                   <td className="p-4 text-sm font-mono font-medium">{claim.claim_number}</td>
-                  <td className="p-4 text-sm text-muted-foreground hidden sm:table-cell">{(claim.policy as Record<string, string>)?.policy_name || 'N/A'}</td>
+                  <td className="p-4 text-sm text-muted-foreground hidden sm:table-cell">{claim.policy?.policy_name || 'N/A'}</td>
                   <td className="p-4 text-sm font-semibold">{formatCurrency(claim.claim_amount)}</td>
                   <td className="p-4">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${getClaimStatusColor(claim.status)}`}>
