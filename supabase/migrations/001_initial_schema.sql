@@ -295,31 +295,44 @@ alter table public.recommendations enable row level security;
 alter table public.chat_sessions enable row level security;
 alter table public.audit_logs enable row level security;
 
+-- Helper functions for RLS to avoid infinite recursion
+create or replace function public.is_admin()
+returns boolean as $$
+begin
+  return exists (
+    select 1 from public.profiles
+    where user_id = auth.uid() and role = 'admin'
+  );
+end;
+$$ language plpgsql security definer;
+
+create or replace function public.is_admin_or_agent()
+returns boolean as $$
+begin
+  return exists (
+    select 1 from public.profiles
+    where user_id = auth.uid() and role in ('admin', 'agent')
+  );
+end;
+$$ language plpgsql security definer;
+
 -- Profiles RLS
 create policy "Users can view own profile" on public.profiles for select using (auth.uid() = user_id);
 create policy "Users can update own profile" on public.profiles for update using (auth.uid() = user_id);
 create policy "Users can insert own profile" on public.profiles for insert with check (auth.uid() = user_id);
-create policy "Admins can view all profiles" on public.profiles for select using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role = 'admin')
-);
-create policy "Admins can update all profiles" on public.profiles for update using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role = 'admin')
-);
+create policy "Admins can view all profiles" on public.profiles for select using (public.is_admin());
+create policy "Admins can update all profiles" on public.profiles for update using (public.is_admin());
 
 -- Insurance Providers RLS (public read, admin write)
 create policy "Anyone can view active providers" on public.insurance_providers for select using (is_active = true);
-create policy "Admins can manage providers" on public.insurance_providers for all using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role = 'admin')
-);
+create policy "Admins can manage providers" on public.insurance_providers for all using (public.is_admin());
 
 -- Policies RLS
 create policy "Users can view own policies" on public.policies for select using (auth.uid() = user_id);
 create policy "Users can insert own policies" on public.policies for insert with check (auth.uid() = user_id);
 create policy "Users can update own policies" on public.policies for update using (auth.uid() = user_id);
 create policy "Users can delete own policies" on public.policies for delete using (auth.uid() = user_id);
-create policy "Admins and agents can view all policies" on public.policies for select using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role in ('admin', 'agent'))
-);
+create policy "Admins and agents can view all policies" on public.policies for select using (public.is_admin_or_agent());
 
 -- Policy Documents RLS
 create policy "Users can manage own policy docs" on public.policy_documents for all using (
@@ -332,9 +345,7 @@ create policy "Users can insert own claims" on public.claims for insert with che
 create policy "Users can update own draft claims" on public.claims for update using (
   auth.uid() = user_id and status = 'draft'
 );
-create policy "Admins can manage all claims" on public.claims for all using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role = 'admin')
-);
+create policy "Admins can manage all claims" on public.claims for all using (public.is_admin());
 
 -- Claim Documents RLS
 create policy "Users can manage own claim docs" on public.claim_documents for all using (
@@ -362,9 +373,7 @@ create policy "Users can manage own recommendations" on public.recommendations f
 create policy "Users can manage own chat sessions" on public.chat_sessions for all using (auth.uid() = user_id);
 
 -- Audit Logs RLS
-create policy "Admins can view audit logs" on public.audit_logs for select using (
-  exists (select 1 from public.profiles where user_id = auth.uid() and role = 'admin')
-);
+create policy "Admins can view audit logs" on public.audit_logs for select using (public.is_admin());
 create policy "Anyone can insert audit logs" on public.audit_logs for insert with check (true);
 
 -- Premium Payments RLS
